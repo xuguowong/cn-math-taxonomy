@@ -3,13 +3,17 @@
  * 改了 SHELL 或 DATA 列表、或数据结构变了，就把 VERSION 加一。 */
 'use strict';
 
-var VERSION = 'v7';
+var VERSION = 'v8';
 var CACHE = 'cnm-pwa-' + VERSION;
 var SCOPE = self.registration.scope;
 
 var SHELL = [
   './',
   'index.html',
+  'analyze/',
+  'analyze/app.js',
+  'analyze/engine.js',
+  'analyze/style.css',
   'explore/',
   'explore/app.js',
   'diagnose/',
@@ -114,7 +118,7 @@ self.addEventListener('fetch', function (event) {
   if (req.method !== 'GET') return;
   var url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname === '/sw.js') return;
+  if (url.pathname === '/sw.js' || url.pathname.indexOf('/api/') === 0) return;
   if (req.mode === 'navigate') {
     event.respondWith(networkFirst(req, true, abs('./')));
     return;

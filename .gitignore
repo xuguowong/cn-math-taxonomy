@@ -11,3 +11,5 @@ __pycache__/
 PROMPT*.md
 chain.sh
 .cf-token-workers
+
+!.env.example
