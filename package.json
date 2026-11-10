@@ -8,7 +8,11 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node tests/test_engine.js && node tests/test_children.js && node tests/test_blindspots.js && npm run test:analysis && npm run test:navigation && npm run test:paper",
+    "start": "node --env-file-if-exists=.env scripts/question-server.js",
+    "test:analysis": "node --test tests/question-analysis.test.js tests/question-server.test.js",
+    "test:navigation": "node --test tests/navigation.test.js",
+    "test:paper": "node --test tests/paper.test.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +22,9 @@
   "author": "",
   "license": "ISC",
   "type": "commonjs",
+  "engines": {
+    "node": ">=22"
+  },
   "bugs": {
     "url": "https://github.com/xiaoyang111222/cn-math-taxonomy/issues"
   },

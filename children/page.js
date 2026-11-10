@@ -42,7 +42,7 @@
   if (params.get('from') === 'diagnose') {
     var back = document.getElementById('back');
     var sub = params.get('subject');
-    var href = '../diagnose/' + (sub === 'english' || sub === 'physics' || sub === 'chinese' || sub === 'science' || sub === 'morality' || sub === 'history' || sub === 'geography' || sub === 'biology' || sub === 'chemistry' ? '?subject=' + sub : '');
+    var href = window.CnmNavigation.href('diagnose', sub || window.CnmNavigation.subject);
     var a = el('a', null, '← 回到诊断');
     a.href = href;
     back.appendChild(a);
@@ -128,7 +128,7 @@
     exportStatus.hidden = true;
     listBox.textContent = '';
     if (!kids.length) {
-      listBox.appendChild(el('p', 'kid-empty', '还没有孩子。在下面填昵称和年级，添加第一个。'));
+      listBox.appendChild(el('p', 'kid-empty', '还没有孩子档案，请在添加孩子表单中填写昵称和年级。'));
     } else {
       kids.forEach(function (c) { listBox.appendChild(card(c, !!cur && cur.id === c.id)); });
     }

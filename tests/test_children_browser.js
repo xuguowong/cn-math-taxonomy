@@ -142,9 +142,12 @@ let chrome, source, target, browser;
   await page(target,'/children/history.html?child='+backup.profiles.children[0].id);
   await until(() => target.eval('document.querySelectorAll(".rec").length === 4'), 'four subjects in restored history');
   assert.equal(await target.eval('document.querySelectorAll(".wk-name").length'),4);
+  const viewed=await snapshot(target);
+  assert.equal(JSON.parse(viewed.profiles).current,backup.profiles.children[0].id);
+  assert.deepStrictEqual(JSON.parse(viewed.records),JSON.parse(restored.records));
   await page(target);
   await preview(file); await confirm();
-  assert.deepStrictEqual(await snapshot(target),restored);
+  assert.deepStrictEqual(await snapshot(target),viewed);
   console.log('PASS: actual JSON download -> isolated browser context -> preview/cancel -> restore -> history/weak points -> idempotent reimport');
 
   await target.eval(`(() => {

@@ -1,6 +1,54 @@
 /* 诊断页布局。配色、字号和导航来自 assets/site.css。 */
 
 main#root { width: min(840px, 100%); margin: 0 auto; padding: 20px 16px 56px; }
+main#root[data-view="start"] { width: min(1560px, 100%); }
+.diagnosis-heading { display: flex; align-items: end; justify-content: space-between; gap: 12px 32px; flex-wrap: wrap; padding: 8px 0 24px; }
+.diagnosis-heading h1 { font-size: clamp(1.5rem, 2.4vw, 2rem); line-height: 1.3; margin: 4px 0 0; letter-spacing: -.03em; }
+.diagnosis-heading > p { margin: 0 0 4px; font-size: .95rem; }
+.diagnosis-eyebrow { color: var(--brand-strong); font-size: .8rem; font-weight: 750; letter-spacing: .12em; margin: 0 0 8px; }
+.diagnosis-workspace { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+.diagnosis-sidebar, .diagnosis-content { display: contents; }
+.diagnosis-workspace .card, .diagnosis-workspace .banner { margin-bottom: 0; }
+.diagnosis-workspace #child-bar { order: 0; }
+.diagnosis-workspace .target-config { order: 1; }
+.diagnosis-workspace .diagnosis-settings { order: 2; }
+.diagnosis-workspace #grade-card { order: 3; }
+.diagnosis-workspace #blind-start { order: 4; }
+.diagnosis-workspace .chapter-panel { order: 5; }
+.diagnosis-workspace .diagnosis-footnote { order: 6; margin: 0; }
+.diagnosis-settings .row { gap: 16px; align-items: start; }
+.diagnosis-settings label { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; width: 100%; font-size: .9rem; }
+.diagnosis-settings input { max-width: 100%; }
+.diagnosis-settings .small { font-size: .82rem; line-height: 1.75; }
+.diagnosis-help { margin: 0 0 16px; font-size: .85rem; }
+.diagnosis-help > summary { color: var(--brand-strong); cursor: pointer; padding: 4px 0; }
+.diagnosis-help p { line-height: 1.8; }
+@media screen and (min-width: 1100px) {
+  main#root[data-view="start"] { padding: 32px 32px 64px; }
+  .diagnosis-workspace { grid-template-columns: minmax(310px, 360px) minmax(0, 1fr); gap: 24px; align-items: start; }
+  .diagnosis-sidebar, .diagnosis-content { display: grid; gap: 20px; min-width: 0; }
+  .diagnosis-sidebar { order: 0; }
+  .diagnosis-content { order: 1; }
+  .diagnosis-workspace .card { padding: 22px; }
+  .diagnosis-workspace #grade-card { order: 3; }
+  .diagnosis-workspace #blind-start { order: 4; }
+  .diagnosis-workspace .child-bar .row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .diagnosis-workspace .child-bar .grow { display: none; }
+  .diagnosis-workspace .child-bar label, .diagnosis-workspace .child-bar select { grid-column: 1 / -1; }
+  .diagnosis-workspace .child-bar select { width: 100%; min-width: 0; }
+  .diagnosis-workspace .child-bar .btn { font-size: .82rem; padding: 0 12px; }
+  .target-config > p { line-height: 1.8; font-size: .93rem; max-width: 76ch; }
+  .target-config #search { min-height: 52px; }
+  .diagnosis-workspace #target-list { max-height: max(420px, calc(100vh - 380px)); overflow-y: auto; scrollbar-gutter: stable; overscroll-behavior-y: contain; padding-right: 8px; }
+  .diagnosis-workspace .topic-row { padding: 10px 8px; }
+  .diagnosis-workspace .chap-head { padding: 12px 8px; }
+  .diagnosis-workspace #grade-card .stage-tabs { gap: 6px; }
+  .diagnosis-workspace #grade-card .stage-tab { padding: 0 10px; font-size: .84rem; }
+  .diagnosis-workspace #grade-card > p { font-size: .85rem; line-height: 1.75; }
+  .diagnosis-workspace #grade-card .row { align-items: stretch; gap: 12px; }
+  .diagnosis-workspace #grade-card .row label { font-size: .85rem; }
+  .diagnosis-workspace #grade-card #btn-grade-start, .diagnosis-workspace #grade-card #btn-grade-paper { width: 100%; }
+}
 .card {
   background: var(--bg-elev);
   border: 1px solid var(--line);

@@ -1,0 +1,20 @@
+.paper-dialog { width: min(1120px, calc(100vw - 32px)); height: min(94dvh, 1400px); max-width: none; max-height: 94dvh; padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-elev); color: var(--text); }
+.paper-dialog[open] { display: flex; flex-direction: column; gap: 12px; }
+.paper-dialog::backdrop { background: #0009; }
+.paper-toolbar, .paper-actions { display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.paper-toolbar h2 { margin: 0; font-size: 1.3rem; }
+.paper-controls { display: flex; gap: 12px 20px; align-items: center; flex-wrap: wrap; }
+.paper-controls label { display: flex; align-items: center; gap: 8px; font-size: .85rem; }
+.paper-controls select, .paper-controls input { font-size: .85rem; }
+.paper-controls input[type=number] { width: 76px; }
+.paper-actions { justify-content: flex-end; }
+#paper-status { margin: 0; font-size: .9rem; font-weight: 700; }
+.paper-note { margin: 0; color: var(--muted); font-size: .8rem; line-height: 1.6; }
+#paper-preview { width: 100%; min-height: 200px; flex: 1; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+@media (max-width: 640px) {
+  .paper-dialog { width: calc(100vw - 12px); padding: 12px; }
+  .paper-controls { gap: 8px; }
+  .paper-controls label { font-size: .75rem; }
+  .paper-controls select { max-width: 200px; }
+  .paper-actions button { font-size: .85rem; }
+}

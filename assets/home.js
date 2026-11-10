@@ -11,10 +11,6 @@
   var PREFIX = { math: 'cnm_', english: 'cne_', physics: 'cnp_', chinese: 'cnc_', science: 'cns_', morality: 'cnd_', history: 'cnh_', geography: 'cng_', biology: 'cnb_', chemistry: 'cnk_' };
   var STD_PREFIX = { math: 'cms-', english: 'ces-', physics: 'cps-', chinese: 'ccs-', science: 'css-', morality: 'cds-', history: 'chs-', geography: 'cgs-', biology: 'cbs-', chemistry: 'cks-' };
 
-  function withSubject(href) {
-    if (subject === 'math' || !href || href.indexOf('subject=') >= 0 || href.indexOf('http') === 0) return href;
-    return href + (href.indexOf('?') >= 0 ? '&' : '?') + 'subject=' + subject;
-  }
 
   document.body.classList.toggle('subject-english', subject === 'english');
   document.body.classList.toggle('subject-physics', subject === 'physics');
@@ -25,25 +21,10 @@
   document.body.classList.toggle('subject-geography', subject === 'geography');
   document.body.classList.toggle('subject-biology', subject === 'biology');
   document.body.classList.toggle('subject-chemistry', subject === 'chemistry');
-  document.querySelectorAll('.subject-link').forEach(function (link) {
-    var on = link.getAttribute('data-subject') === subject;
-    link.classList.toggle('on', on);
-    if (on) link.setAttribute('aria-current', 'true');
-    else link.removeAttribute('aria-current');
-  });
-  document.querySelectorAll('.site-nav a:not(.subject-link), a.brand').forEach(function (link) {
-    var href = link.getAttribute('href');
-    var next = withSubject(href);
-    if (next && next !== href) link.setAttribute('href', next);
-  });
   if (subject === 'english') {
     document.title = '英语 · 中小学·高中知识图谱';
     var eye = document.querySelector('.eyebrow');
     if (eye) eye.textContent = '英语：三年级到高中';
-    var primary = document.querySelector('.hero-actions a.btn-primary');
-    var browse = document.querySelector('.hero-actions a.btn:not(.btn-primary)');
-    if (primary) primary.setAttribute('href', 'diagnose/?subject=english');
-    if (browse) browse.setAttribute('href', 'explore/?subject=english');
     var demo = document.querySelector('.quiet-link a');
     if (demo) {
       demo.setAttribute('href', 'diagnose/?subject=english&grade=' + encodeURIComponent('四上') + '&demo=1');
@@ -53,10 +34,6 @@
     document.title = '物理 · 中小学·高中知识图谱';
     var peye = document.querySelector('.eyebrow');
     if (peye) peye.textContent = '物理：初中八、九年级 · 高中必修与选择性必修';
-    var pprimary = document.querySelector('.hero-actions a.btn-primary');
-    var pbrowse = document.querySelector('.hero-actions a.btn:not(.btn-primary)');
-    if (pprimary) pprimary.setAttribute('href', 'diagnose/?subject=physics');
-    if (pbrowse) pbrowse.setAttribute('href', 'explore/?subject=physics');
     var pdemo = document.querySelector('.quiet-link a');
     if (pdemo) {
       pdemo.setAttribute('href', 'diagnose/?subject=physics&grade=' + encodeURIComponent('八上') + '&demo=1');
@@ -66,10 +43,6 @@
     document.title = '小学语文 · 中小学·高中知识图谱';
     var zeye = document.querySelector('.eyebrow');
     if (zeye) zeye.textContent = '语文：小学一至六年级 · 统编版';
-    var zprimary = document.querySelector('.hero-actions a.btn-primary');
-    var zbrowse = document.querySelector('.hero-actions a.btn:not(.btn-primary)');
-    if (zprimary) zprimary.setAttribute('href', 'diagnose/?subject=chinese');
-    if (zbrowse) zbrowse.setAttribute('href', 'explore/?subject=chinese');
     var zdemo = document.querySelector('.quiet-link a');
     if (zdemo) {
       zdemo.setAttribute('href', 'diagnose/?subject=chinese&grade=' + encodeURIComponent('一上') + '&demo=1');
@@ -79,10 +52,6 @@
     document.title = '小学科学 · 中小学·高中知识图谱';
     var seye = document.querySelector('.eyebrow');
     if (seye) seye.textContent = '科学：小学一至六年级 · 教科版';
-    var sprimary = document.querySelector('.hero-actions a.btn-primary');
-    var sbrowse = document.querySelector('.hero-actions a.btn:not(.btn-primary)');
-    if (sprimary) sprimary.setAttribute('href', 'diagnose/?subject=science');
-    if (sbrowse) sbrowse.setAttribute('href', 'explore/?subject=science');
     var sdemo = document.querySelector('.quiet-link a');
     if (sdemo) {
       sdemo.setAttribute('href', 'diagnose/?subject=science&grade=' + encodeURIComponent('一上') + '&demo=1');
@@ -92,10 +61,6 @@
     document.title = '小学道德与法治 · 中小学·高中知识图谱';
     var meye = document.querySelector('.eyebrow');
     if (meye) meye.textContent = '道德与法治：小学一至六年级 · 统编版';
-    var mprimary = document.querySelector('.hero-actions a.btn-primary');
-    var mbrowse = document.querySelector('.hero-actions a.btn:not(.btn-primary)');
-    if (mprimary) mprimary.setAttribute('href', 'diagnose/?subject=morality');
-    if (mbrowse) mbrowse.setAttribute('href', 'explore/?subject=morality');
     var mdemo = document.querySelector('.quiet-link a');
     if (mdemo) {
       mdemo.setAttribute('href', 'diagnose/?subject=morality&grade=' + encodeURIComponent('一上') + '&demo=1');
@@ -105,10 +70,6 @@
     document.title = '初中历史 · 中小学·高中知识图谱';
     var heye = document.querySelector('.eyebrow');
     if (heye) heye.textContent = '历史：初中七至九年级 · 统编版';
-    var hprimary = document.querySelector('.hero-actions a.btn-primary');
-    var hbrowse = document.querySelector('.hero-actions a.btn:not(.btn-primary)');
-    if (hprimary) hprimary.setAttribute('href', 'diagnose/?subject=history');
-    if (hbrowse) hbrowse.setAttribute('href', 'explore/?subject=history');
     var hdemo = document.querySelector('.quiet-link a');
     if (hdemo) {
       hdemo.setAttribute('href', 'diagnose/?subject=history&grade=' + encodeURIComponent('七上') + '&demo=1');
@@ -118,10 +79,6 @@
     document.title = '初中地理 · 中小学·高中知识图谱';
     var geye = document.querySelector('.eyebrow');
     if (geye) geye.textContent = '地理：初中七至八年级 · 人教版';
-    var gprimary = document.querySelector('.hero-actions a.btn-primary');
-    var gbrowse = document.querySelector('.hero-actions a.btn:not(.btn-primary)');
-    if (gprimary) gprimary.setAttribute('href', 'diagnose/?subject=geography');
-    if (gbrowse) gbrowse.setAttribute('href', 'explore/?subject=geography');
     var gdemo = document.querySelector('.quiet-link a');
     if (gdemo) {
       gdemo.setAttribute('href', 'diagnose/?subject=geography&grade=' + encodeURIComponent('七上') + '&demo=1');
@@ -131,10 +88,6 @@
     document.title = '初中生物 · 中小学·高中知识图谱';
     var beye = document.querySelector('.eyebrow');
     if (beye) beye.textContent = '生物：初中七至八年级 · 人教版';
-    var bprimary = document.querySelector('.hero-actions a.btn-primary');
-    var bbrowse = document.querySelector('.hero-actions a.btn:not(.btn-primary)');
-    if (bprimary) bprimary.setAttribute('href', 'diagnose/?subject=biology');
-    if (bbrowse) bbrowse.setAttribute('href', 'explore/?subject=biology');
     var bdemo = document.querySelector('.quiet-link a');
     if (bdemo) {
       bdemo.setAttribute('href', 'diagnose/?subject=biology&grade=' + encodeURIComponent('七上') + '&demo=1');
@@ -144,16 +97,18 @@
     document.title = '化学 · 中小学·高中知识图谱';
     var ceye = document.querySelector('.eyebrow');
     if (ceye) ceye.textContent = '化学：初中九年级 · 人教版';
-    var cprimary = document.querySelector('.hero-actions a.btn-primary');
-    var cbrowse = document.querySelector('.hero-actions a.btn:not(.btn-primary)');
-    if (cprimary) cprimary.setAttribute('href', 'diagnose/?subject=chemistry');
-    if (cbrowse) cbrowse.setAttribute('href', 'explore/?subject=chemistry');
     var cdemo = document.querySelector('.quiet-link a');
     if (cdemo) {
       cdemo.setAttribute('href', 'diagnose/?subject=chemistry&grade=' + encodeURIComponent('九上') + '&demo=1');
       cdemo.textContent = '先看一遍演示：九年级上册化学';
     }
   }
+
+  document.getElementById('home-diagnose-link').href = window.CnmNavigation.href('diagnose');
+  document.getElementById('home-explore-link').href = window.CnmNavigation.href('explore');
+  document.getElementById('home-analyze-link').href = window.CnmNavigation.href('analyze');
+  var subjectName = document.getElementById('navigation-subject').selectedOptions[0].textContent;
+  document.querySelector('.hero .lede').textContent = '选择' + subjectName + '知识点或章节，检查掌握情况。答错后沿先修关系回溯，形成可以按顺序巩固的学习路径。';
 
   function setText(id, value) {
     var node = document.getElementById(id);

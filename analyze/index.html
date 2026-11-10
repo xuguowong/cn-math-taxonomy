@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0f6e62">
+  <title>题目分析 · 中小学数学知识图谱</title>
+  <link rel="stylesheet" href="../assets/site.css">
+  <link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <script defer src="engine.js"></script>
+  <script defer src="app.js"></script>
+<link rel="stylesheet" href="../assets/workspace.css">
+</head>
+<body class="page-analyze">
+  <header class="site-header workspace-header no-print" data-navigation-page="analyze"></header>
+<script src="../assets/navigation.js"></script>
+  <main class="analysis-page">
+    <section class="analysis-intro">
+      <div><p class="eyebrow">数学 · 小学到高中</p><h1>这道题，<br>需要先学会什么？</h1><p class="intro-copy">放入题目，找到直接考点，再沿知识图谱向前追溯。把一道题，拆成可以一步步学会的知识。</p></div>
+      <ol class="intro-map" aria-label="分析步骤"><li><span>01</span>读懂题目</li><li><span>02</span>确认考点</li><li><span>03</span>查看先修路径</li></ol>
+    </section>
+    <div class="workspace">
+      <section class="input-panel panel" aria-labelledby="input-title">
+        <div class="panel-heading"><h2 id="input-title">放入一道数学题</h2><span class="small-badge">文字 / 图片</span></div>
+        <label for="question">题目文字 <span class="muted">（也可只上传图片）</span></label>
+        <textarea id="question" rows="6" maxlength="6000" placeholder="例如：小明吃了一个蛋糕的 1/3，小红吃了同一个蛋糕的 1/4，两人一共吃了多少？"></textarea>
+        <div class="examples" aria-label="示例题"><span class="muted">试一道</span><button type="button" data-example="fraction">分数应用</button><button type="button" data-example="equation">配方法</button><button type="button" data-example="geometry">几何题</button></div>
+        <div id="drop-zone" class="drop-zone">
+          <label class="upload-label" for="images"><span aria-hidden="true">＋</span><strong>添加题目图片</strong><span>点击上传、拖入图片，或在页面粘贴截图</span></label>
+          <input type="file" id="images" accept="image/png,image/jpeg,image/webp" multiple>
+          <p class="muted">最多 3 张，支持 PNG / JPEG / WebP。上传前可预览和移除。</p>
+        </div>
+        <div id="previews" class="previews" aria-label="已添加图片"></div>
+        <label for="mode">分析方式</label>
+        <select id="mode"><option value="ai">AI 读题与考点分析</option><option value="local">本地候选检索（需手动确认）</option></select>
+        <p id="service-status" class="service-status" role="status">正在检查分析服务…</p>
+        <details class="setup-help"><summary>连接自部署模型</summary><p>在项目根目录的 <code>.env</code> 配置 OpenAI 兼容接口，然后运行 <code>npm start</code>。图片需要视觉模型，并设置 <code>MATH_AI_VISION=1</code>。</p><pre>MATH_AI_BASE_URL=http://127.0.0.1:8000/v1
+MATH_AI_MODEL=你的模型名
+MATH_AI_API_KEY=
+MATH_AI_VISION=1</pre><p>API Key 只在服务端使用。详细步骤见仓库的 <code>analyze/README.md</code>。</p></details>
+        <p id="privacy" class="privacy">AI 模式会将题目和图片发送至你配置的模型服务。本地检索不会发送题目。</p>
+        <div class="input-actions"><button id="analyze" type="button" class="btn btn-primary">分析这道题 <span aria-hidden="true">↗</span></button><button id="cancel" type="button" class="btn" hidden>取消分析</button></div>
+        <p id="message" class="message" role="status" aria-live="polite"></p>
+      </section>
+      <section id="output" class="output-panel" aria-labelledby="output-title">
+        <div id="empty-state" class="empty-state"><div class="empty-diagram" aria-hidden="true"><i></i><i></i><i></i><i></i></div><h2 id="output-title">从题目走向知识</h2><p>分析后会看到解题思路、考点依据，以及从基础到目标的学习顺序。</p><p class="muted">需要哪些知识，和孩子缺哪些知识，是两个问题。确认考点后可继续做诊断。</p></div>
+        <div id="analysis-result" hidden>
+          <section class="panel"><p id="analysis-mode" class="eyebrow"></p><h2 id="summary-title">题目分析</h2><p id="summary-text"></p>
+            <details id="recognition" hidden><summary>图片识别内容 · 请核对</summary><p id="recognized-text" class="preserve-space"></p><p class="muted">如有误读，可在左侧补充正确条件后重新分析。</p></details>
+            <div id="outline-wrap" hidden><h3>一种解题思路</h3><ol id="outline"></ol></div>
+            <div id="uncertainties" class="uncertainties" hidden></div>
+          </section>
+          <section class="panel"><div class="panel-heading"><h2>确认直接考点</h2><span id="target-count" class="small-badge"></span></div><p class="muted">勾选这道题直接用到的知识。前置基础会自动展开，不必逐一添加。</p><div id="target-list"></div>
+            <label for="topic-search">手动补充 / 修正考点</label><input id="topic-search" type="search" placeholder="搜索知识点名称，如：通分" autocomplete="off"><div id="search-results" aria-live="polite"></div>
+            <label class="soft-option"><input id="include-soft" type="checkbox"> 同时展开图谱中的软先修关系</label>
+            <button id="build-plan" class="btn btn-primary" type="button">生成学习顺序</button>
+          </section>
+          <section id="plan-panel" class="panel" hidden><div class="panel-heading"><h2>从基础到这道题</h2><button type="button" id="export" class="text-button">导出 JSON ↓</button></div><p id="plan-summary"></p><p class="plan-note">这是图谱中的先修关系，并非孩子的薄弱点清单。已学会的内容可以跳过；图谱数据仍需教师核对。</p><div class="plan-actions"><a id="diagnose-link" class="btn btn-primary" href="../diagnose/">检查孩子掌握了哪些</a></div><ol id="learning-path" class="learning-path"></ol><details id="deep-path" hidden><summary id="deep-summary"></summary><ol id="deep-list" class="learning-path"></ol></details></section>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer"><p>知识数据来自 <a href="https://github.com/xiaoyang111222/cn-math-taxonomy">cn-math-taxonomy</a> · 首版支持数学 · AI 分析与先修关系均需核对</p></footer>
+  <script src="../assets/pwa.js"></script>
+</body>
+</html>
