@@ -47,7 +47,7 @@ main#root[data-view="start"] { width: min(1560px, 100%); }
   .diagnosis-workspace #grade-card > p { font-size: .85rem; line-height: 1.75; }
   .diagnosis-workspace #grade-card .row { align-items: stretch; gap: 12px; }
   .diagnosis-workspace #grade-card .row label { font-size: .85rem; }
-  .diagnosis-workspace #grade-card #btn-grade-start { width: 100%; }
+  .diagnosis-workspace #grade-card #btn-grade-start, .diagnosis-workspace #grade-card #btn-grade-paper { width: 100%; }
 }
 .card {
   background: var(--bg-elev);

@@ -717,7 +717,11 @@
           h('button', {
             class: 'primary', id: 'btn-grade-start', disabled: !g,
             onclick: function () { if (g) startSession(g.ids, g.label + '（整体筛查）', null, 'screen'); }
-          }, '开始整体诊断')),
+          }, '开始整体诊断'),
+          h('button', {
+            type: 'button', id: 'btn-grade-paper', disabled: !g,
+            onclick: function () { if (g) openPaper(g.ids, g.label, getSettings().screenLimit); }
+          }, '打印本范围试卷')),
         h('p', { class: 'muted small' }, '知识点多、题量有限，到上限后没测到的标为「未测」；结果页可以再加题。默认 ' + E.SCREEN_LIMIT + ' 题。'));
     };
     fill();
@@ -838,6 +842,14 @@
     return q.answer;
   }
 
+  function openPaper(targets, label, count, item) {
+    window.DiagPaper.open({
+      graph: D.graph, targets: targets, label: label.replace(/（整体筛查）/g, ''), count: count,
+      subject: subject, seed: session ? session.seed + '|paper' : newSeed(),
+      currentTopicId: item && item.topicId, currentQuestion: item && item.question
+    });
+  }
+
   function feedbackBlock(q) {
     return h('div', { class: 'feedback' },
       h('div', { class: 'refans' }, h('b', null, '参考答案：'), answerText(q)),
@@ -856,7 +868,8 @@
       h('div', { class: 'row' },
         h('span', { class: 'muted' }, '目标：' + sessionMeta.label),
         h('span', { class: 'grow' }),
-        h('span', { class: 'muted' }, '第 ' + (n + 1) + ' 题 / 上限 ' + session.limit)),
+        h('span', { class: 'muted' }, '第 ' + (n + 1) + ' 题 / 上限 ' + session.limit),
+        h('button', { type: 'button', class: 'no-print', id: 'btn-paper', onclick: function () { openPaper(session.targets, sessionMeta.label, session.limit, item); } }, '打印纸质测试')),
       h('div', { class: 'progress' }, h('i', { style: 'width:' + Math.round(n / session.limit * 100) + '%' })),
       h('h2', { class: 'q-title' }, t.name, ' ', h('span', { class: 'tag', text: t.chapter })),
       h('div', { class: 'row small', style: 'margin:2px 0' },
