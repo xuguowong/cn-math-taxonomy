@@ -99,10 +99,6 @@
     if (subject === 'chemistry') return LS_SESSION_CHEM;
     return LS_SESSION;
   }
-  function withSubject(href) {
-    if (subject === 'math' || !href || href.indexOf('subject=') >= 0 || href.indexOf('http') === 0) return href;
-    return href + (href.indexOf('?') >= 0 ? '&' : '?') + 'subject=' + subject;
-  }
   function detectSubject() {
     const params = new URLSearchParams(location.search);
     const explicit = params.get('subject');
@@ -167,17 +163,6 @@
     document.body.classList.toggle('subject-geography', subject === 'geography');
     document.body.classList.toggle('subject-biology', subject === 'biology');
     document.body.classList.toggle('subject-chemistry', subject === 'chemistry');
-    document.querySelectorAll('.site-nav a:not(.subject-link), a.brand').forEach(function (link) {
-      const href = link.getAttribute('href');
-      const next = withSubject(href);
-      if (next && next !== href) link.setAttribute('href', next);
-    });
-    document.querySelectorAll('.subject-link').forEach(function (link) {
-      const on = link.getAttribute('data-subject') === subject;
-      link.classList.toggle('on', on);
-      if (on) link.setAttribute('aria-current', 'true');
-      else link.removeAttribute('aria-current');
-    });
     if (subject === 'english') {
       document.title = '诊断 · 英语';
       var juniorOk = '三四五六七八九'.indexOf(gradeSel) >= 0;
@@ -570,7 +555,7 @@
         ' ', h('button', { onclick: function () { lsDel(sessionKey()); renderStart(); } }, '放弃存档')));
     }
     if (errMsg) page.append(h('p', { class: 'err', text: errMsg }));
-    sidebar.append(childBar('start'));
+    append(sidebar, childBar('start'));
     const startBlind = blindStartCard();
     if (startBlind) sidebar.append(startBlind);
 
@@ -949,9 +934,9 @@
     card.append(h('div', { class: 'row no-print', style: 'margin-top:12px' },
       n > 0 ? h('button', { class: 'small', onclick: function () { rebuild(session.answers.slice(0, -1)); } }, '撤销上一题') : null,
       h('button', { class: 'small', onclick: function () { if (confirm('确定放弃当前诊断并回到开始页吗？')) restart(); } }, '重新开始')));
-    const page = h('div');
+    const page = h('div', { class: 'diagnosis-question', 'data-view': 'question' });
     if (demo) page.append(demoBanner());
-    page.append(childBar('question'));
+    append(page, childBar('question'));
     page.append(card);
     show(page);
     const inp = document.getElementById('ans');
@@ -1132,11 +1117,11 @@
     const rootSet = new Set(sum.roots.map(function (r) { return r.id; }));
     const screen = session.mode === 'screen';
     const targetSet = new Set(screen ? [] : session.targets);
-    const page = h('div');
+    const page = h('div', { class: 'diagnosis-result', 'data-view': 'result' });
     if (demo) page.append(demoBanner());
     saveToChild(sum);
     noteBlind(sum);
-    page.append(childBar('result'));
+    append(page, childBar('result'));
 
     const targetsMastered = session.targets.every(function (id) { return E.statusOf(session, id) === 'mastered'; });
     const chapters = screen ? E.chapterSummary(D.graph, session) : null;

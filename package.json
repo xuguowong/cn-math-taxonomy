@@ -8,9 +8,10 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "node tests/test_engine.js && node tests/test_children.js && node tests/test_blindspots.js && npm run test:analysis",
+    "test": "node tests/test_engine.js && node tests/test_children.js && node tests/test_blindspots.js && npm run test:analysis && npm run test:navigation",
     "start": "node --env-file-if-exists=.env scripts/question-server.js",
-    "test:analysis": "node --test tests/question-analysis.test.js tests/question-server.test.js"
+    "test:analysis": "node --test tests/question-analysis.test.js tests/question-server.test.js",
+    "test:navigation": "node --test tests/navigation.test.js"
   },
   "repository": {
     "type": "git",

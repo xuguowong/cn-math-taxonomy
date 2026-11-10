@@ -14,40 +14,11 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="知识图谱">
 <link rel="stylesheet" href="../assets/pwa.css">
+<link rel="stylesheet" href="../assets/workspace.css">
 </head>
 <body class="page-explore">
-<a class="top-banner" href="https://test.pansgo.com/?from=math-top" target="_blank" rel="noopener">🧠 儿童智商测试</a>
-<header class="site-header">
-  <a class="brand" href="../">
-    <svg class="logo" viewBox="0 0 32 32" aria-hidden="true"><path fill="var(--logo-sheet)" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" d="M6.6 4.8H17L27.4 15.2V25Q27.4 27.4 25.2 27.4H6.6Q4.4 27.4 4.4 25.2V7Q4.4 4.8 6.6 4.8Z"/><path fill="var(--logo-fold)" d="M17.7 6.3 26.1 14.7H17.7Z"/><path fill="none" stroke="currentColor" stroke-width="1.35" stroke-linecap="round" stroke-linejoin="round" d="M17.7 6.3V14.7H26.1"/><path fill="none" stroke="currentColor" stroke-width="2.15" stroke-linecap="round" stroke-linejoin="round" d="M8.3 24.2H12.4Q14.2 24.2 14.2 22.4V20.2Q14.2 18.6 16 18.6H18.8"/><path fill="currentColor" d="M18.5 16.85 23 18.6 18.5 20.35Z"/></svg>
-    <span class="brand-copy">
-      <span class="brand-name">中小学·高中知识图谱</span>
-      <span class="brand-kicker">学习路径</span>
-    </span>
-  </a>
-  <nav class="site-nav" aria-label="主导航">
-    <div class="subject-switch" role="group" aria-label="学科">
-      <a class="nav-link subject-link on" data-subject="math" href="./">数学</a>
-      <a class="nav-link subject-link" data-subject="chinese" href="./?subject=chinese">语文</a>
-      <a class="nav-link subject-link" data-subject="science" href="./?subject=science">科学</a>
-      <a class="nav-link subject-link" data-subject="morality" href="./?subject=morality">道法</a>
-      <a class="nav-link subject-link" data-subject="history" href="./?subject=history">历史</a>
-      <a class="nav-link subject-link" data-subject="geography" href="./?subject=geography">地理</a>
-      <a class="nav-link subject-link" data-subject="biology" href="./?subject=biology">生物</a>
-      <a class="nav-link subject-link" data-subject="chemistry" href="./?subject=chemistry">化学</a>
-      <a class="nav-link subject-link" data-subject="english" href="./?subject=english">英语</a>
-      <a class="nav-link subject-link" data-subject="physics" href="./?subject=physics">物理</a>
-    </div>
-    <div class="page-links">
-      <a class="nav-link" href="../analyze/">题目分析</a>
-      <a class="nav-link" href="../">首页</a>
-      <a class="nav-link back active" href="./" aria-current="page">知识图谱</a>
-      <a class="nav-link" href="../diagnose/">诊断</a>
-      <a class="nav-link" href="../children/">档案</a>
-      <a class="nav-link" href="https://github.com/xiaoyang111222/cn-math-taxonomy" target="_blank" rel="noopener noreferrer">关于</a>
-    </div>
-  </nav>
-</header>
+<header class="site-header workspace-header no-print" data-navigation-page="explore"></header>
+<script src="../assets/navigation.js"></script>
 <div class="explore">
   <div class="explore-mobile-bar">
     <button type="button" id="list-toggle" class="list-toggle" aria-expanded="false" aria-controls="side">知识点目录</button>

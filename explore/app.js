@@ -272,10 +272,6 @@
     return 'math';
   }
 
-  function withSubject(href) {
-    if (subject === 'math' || !href || href.indexOf('subject=') >= 0 || href.indexOf('http') === 0) return href;
-    return href + (href.indexOf('?') >= 0 ? '&' : '?') + 'subject=' + subject;
-  }
 
   function passFilter(topic) {
     if (subject === 'english') {
@@ -938,17 +934,6 @@
     document.body.classList.toggle('subject-geography', subject === 'geography');
     document.body.classList.toggle('subject-biology', subject === 'biology');
     document.body.classList.toggle('subject-chemistry', subject === 'chemistry');
-    document.querySelectorAll('.site-nav a:not(.subject-link), a.brand').forEach(function (link) {
-      var href = link.getAttribute('href');
-      var next = withSubject(href);
-      if (next && next !== href) link.setAttribute('href', next);
-    });
-    document.querySelectorAll('.subject-link').forEach(function (link) {
-      var on = link.getAttribute('data-subject') === subject;
-      link.classList.toggle('on', on);
-      if (on) link.setAttribute('aria-current', 'true');
-      else link.removeAttribute('aria-current');
-    });
     if (subject === 'physics') {
       document.querySelectorAll('#stage-tabs [data-stage]').forEach(function (button) {
         button.hidden = button.getAttribute('data-stage') === 'p';

@@ -201,7 +201,7 @@
       recs.forEach(function (r) { sec.appendChild(recordCard(child, r)); });
     }
     var go = el('a', 'btn btn-primary', '去做一次诊断');
-    go.href = '../diagnose/' + (subjectSel === 'english' || subjectSel === 'physics' || subjectSel === 'chinese' || subjectSel === 'science' || subjectSel === 'morality' || subjectSel === 'history' || subjectSel === 'geography' || subjectSel === 'biology' || subjectSel === 'chemistry' ? '?subject=' + subjectSel : '');
+    go.href = window.CnmNavigation.href('diagnose', subjectSel || window.CnmNavigation.subject);
     sec.appendChild(go);
     return sec;
   }
@@ -241,7 +241,7 @@
       b.type = 'button';
       b.setAttribute('role', 'tab');
       b.setAttribute('aria-selected', subjectSel === s[0] ? 'true' : 'false');
-      b.addEventListener('click', function () { subjectSel = s[0]; render(); });
+      b.addEventListener('click', function () { subjectSel = s[0]; window.CnmNavigation.setSubject(subjectSel); render(); });
       row.appendChild(b);
     });
     return row;
@@ -289,6 +289,7 @@
     var want = new URLSearchParams(location.search).get('child');
     var cur = CC.current();
     childId = (want && CC.get(want) && want) || (cur && cur.id) || (kids[0] && kids[0].id) || null;
+    if (childId) CC.setCurrent(childId);
     if (!kids.length) { render(); return; }
     fetch('../data/topics.json').then(function (r) {
       if (!r.ok) throw new Error('HTTP ' + r.status);

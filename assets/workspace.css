@@ -1,0 +1,89 @@
+/* 所有页面共用的导航、内容宽度与桌面布局，加载在各页样式之后。 */
+:root { --workspace-width: 1560px; --workspace-gutter: 32px; }
+.workspace-header.site-header { display: block; padding: 0; position: sticky; top: 0; z-index: 30; background: var(--header-bg); }
+.workspace-header-row, .workspace-context { width: min(var(--workspace-width), 100%); padding-inline: var(--workspace-gutter); margin-inline: auto; }
+.workspace-header-row { min-height: 84px; display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+.workspace-header .brand { flex-shrink: 0; }
+.workspace-logo { display: grid; place-items: center; width: 40px; height: 40px; border: 1px solid var(--brand); border-radius: 11px; color: var(--brand); background: var(--brand-soft); font: 29px Georgia, serif; }
+.workspace-primary { display: flex; align-items: center; gap: 4px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
+.workspace-nav-link { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 14px; color: var(--muted); text-decoration: none; white-space: nowrap; font-size: .92rem; font-weight: 700; border-radius: 9px; }
+.workspace-nav-link:hover { background: var(--bg-muted); color: var(--text); }
+.workspace-nav-link.active { color: var(--brand-strong); background: var(--brand-soft); }
+.workspace-context { min-height: 58px; display: flex; justify-content: space-between; align-items: center; gap: 12px 24px; border-top: 1px solid var(--line); font-size: .85rem; }
+.workspace-subject { display: flex; align-items: center; gap: 12px; }
+.workspace-subject-label { font-size: .85rem; color: var(--muted); font-weight: 600; }
+.workspace-subject select { min-height: 36px; min-width: 145px; padding-block: 4px; }
+.workspace-scope { color: var(--muted); font-size: .8rem; }
+.workspace-location { flex-shrink: 0; }
+body > main.home, body > main.analysis-page, body > main.kids, body > main#root { width: min(var(--workspace-width), 100%); max-width: var(--workspace-width); padding: 32px var(--workspace-gutter) 64px; margin-inline: auto; }
+.home-overview { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; align-items: stretch; }
+.home-overview .hero { padding: 32px; display: flex; flex-direction: column; justify-content: center; }
+.home-overview .hero h1 { font-size: clamp(1.8rem, 2.8vw, 2.7rem); }
+.home-guide { min-width: 0; }
+.home-guide .section-title { margin-top: 0; }
+.home-guide .steps { grid-template-columns: 1fr; gap: 10px; }
+.home-guide .steps li { padding: 14px 18px; }
+.home-guide .steps h3 { display: inline; margin-left: 8px; }
+.home-guide .steps p { margin: 8px 0 0; font-size: .88rem; line-height: 1.7; }
+.home .grade-grid { grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); }
+.kids-workspace { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(320px, 1fr); gap: 24px; align-items: start; margin-top: 24px; }
+.kids-list-area, .kids-tools { min-width: 0; }
+.kids-tools .kid-form { margin-top: 0; margin-bottom: 24px; }
+.kids-list-area #list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.kids-list-area #list .kid-card { margin: 0; }
+.kids-list-area .kid-empty { grid-column: 1 / -1; }
+.kids .lede { max-width: 75ch; }
+.history-content { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 20px 28px; }
+.history-content > :not(.kid-section) { grid-column: 1 / -1; }
+.history-content > a { justify-self: start; }
+.history-content > .kid-section { padding: 24px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-elev); min-width: 0; }
+.history-content .kid-tabs { margin-bottom: 0; }
+.diagnosis-result { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+.diagnosis-result > * { grid-column: 1 / -1; min-width: 0; }
+.diagnosis-result > #roots, .diagnosis-result > #shaky, .diagnosis-result > #path, .diagnosis-result > #graph, .diagnosis-result > #mastered, .diagnosis-result > #untested { grid-column: auto; }
+.diagnosis-result > .card { margin-bottom: 0; padding: 24px; }
+body > main#root[data-view="question"] { max-width: 1160px; }
+.diagnosis-question > .card { padding: 32px; }
+.analysis-page .analysis-intro { gap: 32px; }
+.analysis-page .analysis-intro h1 { font-size: clamp(32px, 3.3vw, 48px); }
+body.page-explore { height: 100dvh; }
+body.page-explore .workspace-header { flex: none; }
+body.page-explore .explore { width: min(var(--workspace-width), 100%); margin-inline: auto; grid-template-columns: minmax(240px, 280px) minmax(0, 1fr) minmax(280px, 340px); border-inline: 1px solid var(--line); }
+@media (max-width: 1099px) {
+  :root { --workspace-gutter: 24px; }
+  .workspace-header-row { flex-direction: column; align-items: stretch; gap: 10px; padding-block: 14px 8px; }
+  .workspace-primary { width: 100%; }
+  .workspace-primary .workspace-nav-link { flex: 1 0 auto; }
+  .home-overview { grid-template-columns: 1fr; }
+  .home-guide .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .home-guide .steps h3 { display: block; margin: 8px 0; }
+  .kids-list-area #list { grid-template-columns: 1fr; }
+  .diagnosis-result { grid-template-columns: 1fr; }
+  .diagnosis-result > * { grid-column: 1 !important; }
+}
+@media (max-width: 900px) {
+  .kids-workspace, .history-content { grid-template-columns: 1fr; }
+  body.page-explore { height: auto; }
+  body.page-explore .explore { display: flex; border-inline: 0; }
+}
+@media (max-width: 640px) {
+  :root { --workspace-gutter: 16px; }
+  .workspace-header .brand-name { font-size: 1rem; }
+  .workspace-header .brand-kicker { display: none; }
+  .workspace-header-row { min-height: 0; gap: 8px; padding-top: 10px; }
+  .workspace-nav-link { padding-inline: 12px; font-size: .85rem; }
+  .workspace-context { min-height: 52px; gap: 8px; }
+  .workspace-subject { gap: 6px; }
+  .workspace-subject-label { display: none; }
+  .workspace-subject select { min-width: 112px; max-width: 140px; font-size: .85rem; }
+  .workspace-scope { max-width: 60%; text-align: right; font-size: .7rem; }
+  body > main.home, body > main.analysis-page, body > main.kids, body > main#root { padding-top: 24px; }
+  .home-overview .hero { padding: 24px 18px; }
+  .home-guide .steps { grid-template-columns: 1fr; }
+  .history-content > .kid-section, .diagnosis-result > .card, .diagnosis-question > .card { padding: 16px; }
+}
+@media print {
+  .workspace-header { display: none !important; }
+  .diagnosis-result, .kids-workspace, .history-content { display: block; }
+  body > main#root { width: 100%; padding: 0; }
+}
