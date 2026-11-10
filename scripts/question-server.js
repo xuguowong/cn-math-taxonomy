@@ -4,6 +4,8 @@
 const http = require('node:http');
 const fs = require('node:fs');
 const path = require('node:path');
+const os = require('node:os');
+const net = require('node:net');
 const { analyzeQuestion, validateImages } = require('../analyze/ai');
 const ROOT = path.resolve(__dirname, '..');
 const MAX_BODY = 34 * 1024 * 1024;
@@ -14,25 +16,42 @@ function loadConfig(env = process.env) {
   const ms = Number(env.MATH_AI_TIMEOUT_MS || 120000);
   result.timeoutMs = Number.isFinite(ms) ? Math.max(1000, Math.min(ms, 300000)) : 120000;
   result.vision = env.MATH_AI_VISION === '1';
+  result.host = (env.HOST || '127.0.0.1').trim();
+  result.allowedHosts = (env.ALLOWED_HOSTS || '').split(',').map(s => s.trim()).filter(Boolean);
   return result;
+}
+function hostname(value) {
+  const url = new URL('http://' + (net.isIP(value) === 6 ? '[' + value + ']' : value));
+  if (url.hostname.includes('*') || url.username || url.password || url.port || url.pathname !== '/' || url.search || url.hash) throw new Error('ALLOWED_HOSTS 只能填写主机名或 IP，不包含协议、端口、路径和通配符。');
+  return url.hostname;
+}
+function allowedHosts(config, interfaces = os.networkInterfaces()) {
+  const hosts = new Set(['localhost', '127.0.0.1', '[::1]']);
+  const bind = config.host || '127.0.0.1';
+  if (!['127.0.0.1', '::1', 'localhost'].includes(bind)) {
+    for (const entries of Object.values(interfaces)) for (const entry of entries || []) hosts.add(hostname(entry.address));
+    if (bind !== '0.0.0.0' && bind !== '::') hosts.add(hostname(bind));
+  }
+  for (const name of config.allowedHosts || []) hosts.add(hostname(name));
+  return hosts;
 }
 function createServer({ config = loadConfig(), analyze = analyzeQuestion } = {}) {
   const topics = JSON.parse(fs.readFileSync(path.join(ROOT, 'data/topics.json'), 'utf8'));
+  const acceptedHosts = allowedHosts(config);
   let active = 0;
   const server = http.createServer(async (req, res) => {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Referrer-Policy', 'same-origin');
     res.setHeader('X-Frame-Options', 'SAMEORIGIN');
     const json = (status, data) => { res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Cache-Control': 'no-store' }); res.end(JSON.stringify(data)); };
-    // Localhost DNS rebinding / cross-origin POST guard. No CORS API access.
+    // Accept local interface addresses in LAN mode, plus explicit aliases. No cross-origin API access.
     const host = req.headers.host;
     let url;
     try { url = new URL(req.url, 'http://' + host); } catch { return json(400, { error: '请求地址不正确。' }); }
     if (req.headers.origin && req.headers.origin !== 'http://' + host && req.headers.origin !== 'https://' + host) return json(403, { error: '只接受同源请求。' });
-    const acceptedHosts = new Set(['localhost', '127.0.0.1', '[::1]']);
     let hostname;
     try { hostname = new URL('http://' + host).hostname; } catch { return json(400, { error: 'Host 不正确。' }); }
-    if (!acceptedHosts.has(hostname)) return json(403, { error: '此服务仅供本机访问。' });
+    if (!acceptedHosts.has(hostname)) return json(403, { error: '访问主机未获允许。请使用服务器本机 IP，或在 ALLOWED_HOSTS 中配置主机名。' });
     if (url.pathname === '/api/analysis-status' && req.method === 'GET') return json(200, { configured: !!(config.baseURL && config.model), vision: !!config.vision });
     if (url.pathname === '/api/analyze') {
       if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return json(405, { error: '请使用 POST。' }); }
@@ -89,8 +108,19 @@ function createServer({ config = loadConfig(), analyze = analyzeQuestion } = {})
 }
 if (require.main === module) {
   const port = Number(process.env.PORT || 8787);
-  const server = createServer();
+  const config = loadConfig();
+  const server = createServer({ config });
   server.on('error', e => { console.error('无法启动服务：' + e.message); process.exitCode = 1; });
-  server.listen(port, '127.0.0.1', () => console.log('题目知识分析：http://127.0.0.1:' + server.address().port + '/analyze/'));
+  server.listen(port, config.host, () => {
+    const actualPort = server.address().port;
+    const localHost = config.host === '0.0.0.0' || config.host === '::' ? '127.0.0.1' : hostname(config.host);
+    console.log('题目知识分析：http://' + localHost + ':' + actualPort + '/analyze/');
+    if (!['127.0.0.1', '::1', 'localhost'].includes(config.host)) {
+      console.log('局域网监听地址：' + config.host + ':' + actualPort);
+      for (const entries of Object.values(os.networkInterfaces())) for (const entry of entries || []) {
+        if (!entry.internal && entry.family === 'IPv4' && (config.host === '0.0.0.0' || config.host === '::' || config.host === entry.address)) console.log('局域网访问：http://' + entry.address + ':' + actualPort + '/analyze/');
+      }
+    }
+  });
 }
-module.exports = { createServer, loadConfig };
+module.exports = { createServer, loadConfig, allowedHosts };

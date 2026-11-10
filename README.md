@@ -4,7 +4,7 @@
 
 使用 Node.js 22 或更高版本，在根目录执行 `npm start`，访问 <http://127.0.0.1:8787/analyze/>。无需安装 npm 依赖。AI 配置、视觉模型接入和部署说明见 [题目分析文档](analyze/README.md)。
 
-本机启动、远程服务器、SSH 转发、常驻运行和问题排查见 [部署指南](docs/deployment.md)。
+本机启动、局域网访问、远程服务器、SSH 转发、常驻运行和问题排查见 [部署指南](docs/deployment.md)。
 
 原项目说明如下。
 
