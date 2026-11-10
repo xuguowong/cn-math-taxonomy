@@ -42,7 +42,7 @@
   let subject = 'math';
   let startQuery = '';
   let startStage = '';
-  let chapterOpen = false;
+  let chapterOpen = window.matchMedia('(min-width: 1100px)').matches;
   let gradeSel = '七';     // 开始页「按年级整体诊断」：年级
   let volSel = '';         // '' 整年级 / '上' / '下'
   let seedParam = null;    // URL 参数 seed：固定选题的随机种子
@@ -253,7 +253,7 @@
     pathTipLock = false;
     if (pathCy) { pathCy.destroy(); pathCy = null; window.__pathCy = null; }
   }
-  function show(node) { teardownPath(); closeShare(); clearRoot(); root.append(node); window.scrollTo(0, 0); }
+  function show(node) { teardownPath(); closeShare(); clearRoot(); root.dataset.view = node.dataset.view || 'default'; root.append(node); window.scrollTo(0, 0); }
   function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
   function theme() {
     return {
@@ -555,7 +555,12 @@
   }
 
   function renderStart(errMsg) {
-    const page = h('div');
+    const page = h('div', { class: 'diagnosis-start', 'data-view': 'start' });
+    const sidebar = h('aside', { class: 'diagnosis-sidebar', 'aria-label': '孩子与诊断设置' });
+    const content = h('section', { class: 'diagnosis-content', 'aria-label': '选择知识点' });
+    page.append(h('header', { class: 'diagnosis-heading' },
+      h('div', null, h('p', { class: 'diagnosis-eyebrow', text: '学习诊断' }), h('h1', { text: '找到需要巩固的那一步' })),
+      h('p', { class: 'muted', text: '选一个知识点深入检查，或按年级做整体诊断。' })));
     const saved = lsGet(sessionKey());
     if (saved && saved.targets && D.graph.byId[saved.targets[0]]) {
       page.append(h('div', { class: 'banner' },
@@ -565,9 +570,9 @@
         ' ', h('button', { onclick: function () { lsDel(sessionKey()); renderStart(); } }, '放弃存档')));
     }
     if (errMsg) page.append(h('p', { class: 'err', text: errMsg }));
-    page.append(childBar('start'));
+    sidebar.append(childBar('start'));
     const startBlind = blindStartCard();
-    if (startBlind) page.append(startBlind);
+    if (startBlind) sidebar.append(startBlind);
 
     const st = getSettings();
     const limitInput = h('input', { type: 'number', min: LIMIT_MIN, max: LIMIT_MAX, step: 1, value: String(st.limit), id: 'limit-input', 'aria-label': '题量上限' });
@@ -593,9 +598,9 @@
       h('p', { class: 'muted small', text: '列表按年级、册、章折叠。想直接开始，用上面的搜索更快。' }),
       listBox);
     browser.addEventListener('toggle', function () { chapterOpen = browser.open; });
-    const confirmHelp = '同一知识点连续答对 ' + st.confirm + ' 题（可在下方改成 2 / 3 / 5；题库更少时以题库为准）才算掌握；答错会再出一道同级或更容易的题——确认题也错才算薄弱并回溯先修，确认题答对则标为「不稳」。';
-    page.append(h('div', { class: 'card' },
-      h('h1', { text: '选择诊断目标' }),
+    const confirmHelp = '同一知识点连续答对 ' + st.confirm + ' 题（可在诊断设置中改成 2 / 3 / 5；题库更少时以题库为准）才算掌握；答错会再出一道同级或更容易的题——确认题也错才算薄弱并回溯先修，确认题答对则标为「不稳」。';
+    content.append(h('div', { class: 'card target-config' },
+      h('h2', { text: '选择诊断目标' }),
       h('p', { class: 'muted' }, subject === 'physics'
         ? '选一个想学会或想检查的物理知识点。' + confirmHelp
         : subject === 'english'
@@ -630,15 +635,18 @@
           if (startQuery.trim()) { browser.open = true; chapterOpen = true; }
         }
       }),
-      h('p', { class: 'muted small', id: 'match-count' }),
+      h('p', { class: 'muted small', id: 'match-count' })));
+    sidebar.append(h('section', { class: 'card diagnosis-settings' },
+      h('h2', { text: '诊断设置' }),
       h('div', { class: 'row' },
         h('label', null, '单点 / 整章题量上限（' + LIMIT_MIN + '–' + LIMIT_MAX + '）', limitInput),
         h('label', null, '每知识点确认题数', confirmSelect),
         h('span', { class: 'muted small' }, '连续答对这么多题才判掌握；中途答错会再出一道确认题。到上限后，没测到的标为「未测」。'))));
-    page.append(gradeCard());
-    page.append(h('div', { class: 'card' }, browser));
-    page.append(h('p', { class: 'muted small' },
+    sidebar.append(gradeCard());
+    content.append(h('div', { class: 'card chapter-panel' }, browser));
+    content.append(h('p', { class: 'muted small diagnosis-footnote' },
       '可以诊断的知识点：' + D.topics.length + ' 个。进度和出过的题只保存在这台浏览器里。'));
+    page.append(h('div', { class: 'diagnosis-workspace' }, sidebar, content));
     show(page);
     fillList(listBox);
     if (startQuery) { const el = document.getElementById('search'); if (el) el.focus(); }
@@ -681,7 +689,10 @@
       });
       box.append(
         h('h2', { text: '按年级整体诊断' }),
-        h('p', { class: 'muted' }, '本测评检查本年级知识点是否掌握，不是竞赛拔高。按「基础 / 提高 / 拓展」出题：先出提高题，答对再出拓展题确认掌握；答错会先补基础题，仍错会回到前面年级的相关知识点。每个知识点连续答对 ' + getSettings().confirm + ' 题才算掌握（可在上方改），最后按章汇总出哪几章薄弱。适合期初摸底、学期末复习。'),
+        h('p', { class: 'muted' }, '检查本年级知识点的掌握情况，按章节汇总薄弱点。'),
+        h('details', { class: 'diagnosis-help' },
+          h('summary', null, '整体诊断如何出题？'),
+          h('p', { class: 'muted small' }, '本测评不是竞赛拔高。先出提高题，答对再出拓展题确认；答错先补基础题，仍错会回溯相关先修知识。每个知识点连续答对 ' + getSettings().confirm + ' 题才算掌握，可在诊断设置中修改。适合期初摸底、学期末复习。')),
         tabs('年级', subject === 'physics'
           ? [['八', '八年级'], ['九', '九年级'], ['必修一', '必修一'], ['必修二', '必修二'], ['必修三', '必修三'],
             ['选必一', '选必一'], ['选必二', '选必二'], ['选必三', '选必三']]
